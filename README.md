@@ -1,17 +1,39 @@
 
 # tflite-react-native
 
-A react native library for accessing TensorFlow Lite API. Supports Classification and Object Detection on both iOS and Android.
+A React Native library for accessing TensorFlow Lite API. Supports Classification and Object Detection on both iOS and Android.
 
-## Getting started
+## Installation
 
 `$ npm install tflite-react-native --save`
 
-### Mostly automatic installation
+### iOS (only)
+
+TensorFlow Lite is installed using CocoaPods:
+
+1. Initialize Pod:
+	```
+	cd ios
+	pod init
+	```
+
+2. Open Podfile and add:
+	```
+	target '[your project's name]' do
+		pod 'TensorFlowLite', '1.12.0'
+	end
+	```
+
+3. Install:
+	```
+	pod install
+	```
+
+### Automatic link
 
 `$ react-native link tflite-react-native`
 
-### Manual installation
+### Manual link
 
 #### iOS
 

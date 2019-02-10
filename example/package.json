@@ -10,7 +10,7 @@
     "react": "16.6.3",
     "react-native": "0.58.4",
     "react-native-image-picker": "0.28.0",
-    "tflite-react-native": "0.0.2"
+    "tflite-react-native": "0.0.4"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",

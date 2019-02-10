@@ -370,7 +370,7 @@ RCT_EXPORT_METHOD(detectObjectOnImage:(NSString*)image_path
                   callback:(RCTResponseSenderBlock)callback) {
   if (!interpreter) {
     NSLog(@"Failed to construct interpreter.");
-    callback(@[]);
+    callback(@[@"Failed to construct interpreter."]);
   }
   
   int input_size;
@@ -379,7 +379,7 @@ RCT_EXPORT_METHOD(detectObjectOnImage:(NSString*)image_path
   
   if (interpreter->Invoke() != kTfLiteOk) {
     NSLog(@"Failed to invoke!");
-    callback(@[]);
+    callback(@[@"Failed to invoke!"]);
   }
   
   NSMutableArray* results;
