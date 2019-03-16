@@ -31,7 +31,6 @@ repositories {
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:+'
-    compile 'org.tensorflow:tensorflow-lite:+'
+    implementation 'com.facebook.react:react-native:+'
+    implementation 'org.tensorflow:tensorflow-lite:+'
 }
-  
