@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   A React Native library for accessing TensorFlow Lite API. Supports Classification and Object Detection on both iOS and Android.
                    DESC
-  s.homepage     = ""
+  s.homepage     = "https://github.com/shaqian/tflite-react-native"
   s.license      = "MIT"
   # s.license     = { :type => "MIT", :file => "../LICENSE" }
   s.author       = { 'Qian Sha' => 'https://github.com/shaqian' }
