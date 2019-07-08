@@ -11,6 +11,8 @@ const blue = "#25d5fd";
 const mobile = "MobileNet";
 const ssd = "SSD MobileNet";
 const yolo = "Tiny YOLOv2";
+const deeplab = "Deeplab";
+const posenet = "PoseNet";
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -35,6 +37,14 @@ export default class App extends Component<Props> {
       case yolo:
         var modelFile = 'models/yolov2_tiny.tflite';
         var labelsFile = 'models/yolov2_tiny.txt';
+        break;
+      case deeplab:
+        var modelFile = 'models/deeplabv3_257_mv_gpu.tflite';
+        var labelsFile = 'models/deeplabv3_257_mv_gpu.txt';
+        break;
+      case posenet:
+        var modelFile = 'models/posenet_mv1_075_float_from_checkpoints.tflite';
+        var labelsFile = '';
         break;
       default:
         var modelFile = 'models/mobilenet_v1_1.0_224.tflite';
@@ -92,6 +102,7 @@ export default class App extends Component<Props> {
                   this.setState({ recognitions: res });
               });
             break;
+
           case yolo:
             tflite.detectObjectOnImage({
               path,
@@ -108,6 +119,32 @@ export default class App extends Component<Props> {
                   this.setState({ recognitions: res });
               });
             break;
+
+          case deeplab:
+            tflite.runSegmentationOnImage({
+              path
+            },
+              (err, res) => {
+                if (err)
+                  console.log(err);
+                else
+                  this.setState({ recognitions: res });
+              });
+            break;
+
+          case posenet:
+            tflite.runPoseNetOnImage({
+              path,
+              threshold: 0.8
+            },
+              (err, res) => {
+                if (err)
+                  console.log(err);
+                else
+                  this.setState({ recognitions: res });
+              });
+            break;
+
           default:
             tflite.runModelOnImage({
               path,
@@ -127,30 +164,64 @@ export default class App extends Component<Props> {
     });
   }
 
-  renderBoxes() {
+  renderResults() {
     const { model, recognitions, imageHeight, imageWidth } = this.state;
-    if (model == mobile)
-      return recognitions.map((res, id) => {
+    switch (model) {
+      case ssd:
+      case yolo:
+        return recognitions.map((res, id) => {
+          var left = res["rect"]["x"] * imageWidth;
+          var top = res["rect"]["y"] * imageHeight;
+          var width = res["rect"]["w"] * imageWidth;
+          var height = res["rect"]["h"] * imageHeight;
+          return (
+            <View key={id} style={[styles.box, { top, left, width, height }]}>
+              <Text style={{ color: 'white', backgroundColor: blue }}>
+                {res["detectedClass"] + " " + (res["confidenceInClass"] * 100).toFixed(0) + "%"}
+              </Text>
+            </View>
+          )
+        });
+        break;
+
+      case deeplab:
         return (
-          <Text key={id} style={{ color: 'black' }}>
-            {res["label"] + "-" + (res["confidence"] * 100).toFixed(0) + "%"}
-          </Text>
-        )
-      });
-    else
-      return recognitions.map((res, id) => {
-        var left = res["rect"]["x"] * imageWidth;
-        var top = res["rect"]["y"] * imageHeight;
-        var width = res["rect"]["w"] * imageWidth;
-        var height = res["rect"]["h"] * imageHeight;
-        return (
-          <View key={id} style={[styles.box, { top, left, width, height }]}>
-            <Text style={{ color: 'white', backgroundColor: blue }}>
-              {res["detectedClass"] + " " + (res["confidenceInClass"] * 100).toFixed(0) + "%"}
+          recognitions.length > 0 ?
+            <Image
+              style={{ flex: 1, width: imageWidth, height: imageHeight }}
+              source={{ uri: 'data:image/png;base64,' + recognitions }}
+              opacity={0.6}
+            /> : undefined
+        );
+        break;
+
+      case posenet:
+        return recognitions.map((res, id) => {
+          return Object.values(res["keypoints"]).map((k, id) => {
+            var left = k["x"] * imageWidth - 6;
+            var top = k["y"] * imageHeight - 6;
+            var width = imageWidth;
+            var height = imageHeight;
+            return (
+              <View key={id} style={{position: 'absolute', top, left, width, height }}>
+                <Text style={{ color: blue, fontSize: 12 }}>
+                  {"● " + k["part"]}
+                </Text>
+              </View>
+            )
+          });
+        });
+        break;
+
+      default:
+        return recognitions.map((res, id) => {
+          return (
+            <Text key={id} style={{ color: 'black' }}>
+              {res["label"] + "-" + (res["confidence"] * 100).toFixed(0) + "%"}
             </Text>
-          </View>
-        )
-      });
+          )
+        });
+    }
   }
 
   render() {
@@ -179,7 +250,7 @@ export default class App extends Component<Props> {
                 <Text style={styles.text}>Select Picture</Text>
             }
             <View style={styles.boxes}>
-              {this.renderBoxes()}
+              {this.renderResults()}
             </View>
           </TouchableOpacity>
           :
@@ -187,6 +258,8 @@ export default class App extends Component<Props> {
             {renderButton(mobile)}
             {renderButton(ssd)}
             {renderButton(yolo)}
+            {renderButton(deeplab)}
+            {renderButton(posenet)}
           </View>
         }
       </View>

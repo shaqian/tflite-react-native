@@ -1,6 +1,6 @@
 {
   "name": "tflite-react-native",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A react native library for accessing TensorFlow Lite API. Supports Classification and Object Detection on both iOS and Android.",
   "main": "index.js",
   "scripts": {

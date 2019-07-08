@@ -1,7 +1,19 @@
 
 # tflite-react-native
 
-A React Native library for accessing TensorFlow Lite API. Supports Classification and Object Detection on both iOS and Android.
+A React Native library for accessing TensorFlow Lite API. Supports Classification, Object Detection, Deeplab and PoseNet on both iOS and Android.
+
+### Table of Contents
+
+- [Installation](#Installation)
+- [Usage](#Usage)
+    - [Image Classification](#Image-Classification)
+    - [Object Detection](#Object-Detection)
+      - [SSD MobileNet](#SSD-MobileNet)
+      - [YOLO](#Tiny-YOLOv2)
+    - [Deeplab](#Deeplab)
+    - [PoseNet](#PoseNet)
+- [Example](#Example)
 
 ## Installation
 
@@ -119,9 +131,19 @@ tflite.runModelOnImage({
 });
 ```
 
+- Output fomart:
+```
+{
+  index: 0,
+  label: "person",
+  confidence: 0.629
+}
+```
+
 ### Object detection:
 
-- SSD MobileNet
+#### SSD MobileNet
+
 ```javascript
 tflite.detectObjectOnImage({
   path: imagePath,
@@ -139,7 +161,8 @@ tflite.detectObjectOnImage({
 });
 ```
 
-- Tiny YOLOv2
+#### Tiny YOLOv2
+
 ```javascript
 tflite.detectObjectOnImage({
   path: imagePath,
@@ -159,12 +182,123 @@ tflite.detectObjectOnImage({
 });
 ```
 
+- Output fomart:
+
+`x, y, w, h` are between [0, 1]. You can scale `x, w` by the width and `y, h` by the height of the image.
+
+```
+{
+  detectedClass: "hot dog",
+  confidenceInClass: 0.123,
+  rect: {
+    x: 0.15,
+    y: 0.33,
+    w: 0.80,
+    h: 0.27
+  }
+}
+```
+
+### Deeplab
+
+```javascript
+tflite.runSegmentationOnImage({
+  path: imagePath,
+  imageMean: 127.5,      // defaults to 127.5
+  imageStd: 127.5,       // defaults to 127.5
+  labelColors: [...],    // defaults to https://github.com/shaqian/tflite-react-native/blob/master/index.js#L59
+  outputType: "png",     // defaults to "png"
+},
+(err, res) => {
+  if(err)
+    console.log(err);
+  else
+    console.log(res);
+});
+```
+
+- Output format:
+  
+  The output of Deeplab inference is Uint8List type. Depending on the `outputType` used, the output is:
+
+  - (if outputType is png) byte array of a png image 
+
+  - (otherwise) byte array of r, g, b, a values of the pixels 
+
+
+### PoseNet
+
+> Model is from [StackOverflow thread](https://stackoverflow.com/a/55288616).
+
+```javascript
+tflite.runPoseNetOnImage({
+  path: imagePath,
+  imageMean: 127.5,      // defaults to 127.5
+  imageStd: 127.5,       // defaults to 127.5
+  numResults: 3,         // defaults to 5
+  threshold: 0.8,        // defaults to 0.5
+  nmsRadius: 20,         // defaults to 20 
+},
+(err, res) => {
+  if(err)
+    console.log(err);
+  else
+    console.log(res);
+});
+```
+
+- Output format:
+
+`x, y` are between [0, 1]. You can scale `x` by the width and `y` by the height of the image.
+
+```
+[ // array of poses/persons
+  { // pose #1
+    score: 0.6324902,
+    keypoints: {
+      0: {
+        x: 0.250,
+        y: 0.125,
+        part: nose,
+        score: 0.9971070
+      },
+      1: {
+        x: 0.230,
+        y: 0.105,
+        part: leftEye,
+        score: 0.9978438
+      }
+      ......
+    }
+  },
+  { // pose #2
+    score: 0.32534285,
+    keypoints: {
+      0: {
+        x: 0.402,
+        y: 0.538,
+        part: nose,
+        score: 0.8798978
+      },
+      1: {
+        x: 0.380,
+        y: 0.513,
+        part: leftEye,
+        score: 0.7090239
+      }
+      ......
+    }
+  },
+  ......
+]
+```
+
 ### Release resources:
 
 ```
 tflite.close();
 ```
 
-# Demo
+## Example
 
 Refer to the [example](https://github.com/shaqian/tflite-react-native/tree/master/example).
