@@ -1,5 +1,3 @@
-// #define CONTRIB_PATH
-
 #import "TfliteReactNative.h"
 
 #include <pthread.h>
@@ -11,17 +9,10 @@
 #include <string>
 #import <UIKit/UIKit.h>
 
-#ifdef CONTRIB_PATH
-#include "tensorflow/contrib/lite/kernels/register.h"
-#include "tensorflow/contrib/lite/model.h"
-#include "tensorflow/contrib/lite/string_util.h"
-#include "tensorflow/contrib/lite/op_resolver.h"
-#else
 #include "tensorflow/lite/kernels/register.h"
 #include "tensorflow/lite/model.h"
 #include "tensorflow/lite/string_util.h"
 #include "tensorflow/lite/op_resolver.h"
-#endif
 
 #include "ios_image_load.h"
 
