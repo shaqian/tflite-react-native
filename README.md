@@ -41,7 +41,7 @@ pod install
 
 ### Android
 
-React native 0.60 uses AndroidX. And the java part of this module is not (yet) converted to AndroixX. So in order to make it work, you should use [jetify](https://github.com/mikehardy/jetifier).
+React native 0.60 uses AndroidX. And the java part of this module is not (yet) converted to AndroidX. So in order to make it work, you should use [jetify](https://github.com/mikehardy/jetifier).
 
 At the root folder of your react-native project:
 ```sh
@@ -169,7 +169,7 @@ tflite.detectObjectOnImage({
 });
 ```
 
-- Output fomart:
+- Output format:
 
 `x, y, w, h` are between [0, 1]. You can scale `x, w` by the width and `y, h` by the height of the image.
 
