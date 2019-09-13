@@ -297,12 +297,12 @@ cd tflite-react-native/example
 npm install
 ```
 
-**For iOS** (real device only), install the dependencies:
+**For iOS**, install the dependencies:
 ```sh
 cd ios
 pod install
 ```
-Then open the example.xcworkspace file with Xcode, setup you developer id in _example_ project and click the _play_ button.
+Then open the example.xcworkspace file with Xcode, and click the _play_ button.
 
 **For Android**, just do:
 ```sh
