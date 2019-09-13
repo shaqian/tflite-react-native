@@ -15,6 +15,10 @@ Use tflite-react-native plugin to run model on images.
 
 ## Installation 
 
+```
+npm install
+```
+
 * For iOS, TensorFlow Lite is installed using POD:
 
 ```
@@ -22,11 +26,10 @@ cd ios
 pod install
 ```
 
-* Install other dependencies:
+* For Android, a conversion to AndroidX is necessary (for now):
 
 ```
-cd ..
-npm install
+npm run jetify
 ```
 
 ## Run the App

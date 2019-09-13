@@ -19,55 +19,42 @@ A React Native library for accessing TensorFlow Lite API. Supports Classificatio
 
 `$ npm install tflite-react-native --save`
 
-### iOS (only)
+Since version 0.60 of React Native, native modules are _autolinked_. So you don't need to do `react-native link tflite-react-native` anymore.
 
-TensorFlow Lite is installed using CocoaPods:
+### iOS
 
-1. Initialize Pod:
-	```
-	cd ios
-	pod init
-	```
+Native dependencies are now managed with cocoapods. So, Make sure you have cocoapods:
+```sh
+pod --version
+```
+If not, install-it:
+```sh
+[sudo] gem install cocoapods
+```
 
-2. Open Podfile and add:
-	```
-	target '[your project's name]' do
-		pod 'TensorFlowLite', '1.12.0'
-	end
-	```
+Then, you can install the dependencies:
 
-3. Install:
-	```
-	pod install
-	```
+```sh
+cd ios
+pod install
+```
 
-### Automatic link
+### Android
 
-`$ react-native link tflite-react-native`
+React native 0.60 uses AndroidX. And the java part of this module is not (yet) converted to AndroidX. So in order to make it work, you should use [jetify](https://github.com/mikehardy/jetifier).
 
-### Manual link
-
-#### iOS
-
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `tflite-react-native` and add `TfliteReactNative.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libTfliteReactNative.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
-
-#### Android
-
-1. Open up `android/app/src/main/java/[...]/MainApplication.java`
-  - Add `import com.reactlibrary.TfliteReactNativePackage;` to the imports at the top of the file
-  - Add `new TfliteReactNativePackage()` to the list returned by the `getPackages()` method
-2. Append the following lines to `android/settings.gradle`:
-    ```
-    include ':tflite-react-native'
-    project(':tflite-react-native').projectDir = new File(rootProject.projectDir,   '../node_modules/tflite-react-native/android')
-    ```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-    ```
-      compile project(':tflite-react-native')
-    ```
+At the root folder of your react-native project:
+```sh
+npm install --save-dev jetifier
+npx jetify
+```
+Also, any time your dependencies update you have to jetify again. So like it's advised on Jetify website, you could add this in the `scripts` section of your _package.json_:
+```json
+{
+  "postinstall": "npx jetify",
+  ...
+}
+```
 
 ## Add models to the project
 
@@ -182,7 +169,7 @@ tflite.detectObjectOnImage({
 });
 ```
 
-- Output fomart:
+- Output format:
 
 `x, y, w, h` are between [0, 1]. You can scale `x, w` by the width and `y, h` by the height of the image.
 
@@ -302,3 +289,23 @@ tflite.close();
 ## Example
 
 Refer to the [example](https://github.com/shaqian/tflite-react-native/tree/master/example).
+
+In order to try the example by yourself, you can do:
+```sh
+git clone https://github.com/shaqian/tflite-react-native.git
+cd tflite-react-native/example
+npm install
+```
+
+**For iOS**, install the dependencies:
+```sh
+cd ios
+pod install
+```
+Then open the example.xcworkspace file with Xcode, and click the _play_ button.
+
+**For Android**, just do:
+```sh
+npx jetify
+react-native run-android
+```
